@@ -34,7 +34,7 @@ public class TCPClient {
         socket.getOutputStream().write(toServerBytes);
 
         InputStream inputStream = socket.getInputStream();
-        byte[] serverResponse = new byte[512]; // Moved inside the loop
+        byte[] serverResponse = new byte[512];
         int length;
         int totalBytesRead = 0;
 
