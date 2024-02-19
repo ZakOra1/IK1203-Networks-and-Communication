@@ -30,15 +30,20 @@ public class TCPClient {
             socket.setSoTimeout(timeout);
         }
 
-        // Contact server
-        socket.getOutputStream().write(toServerBytes);
-
-        InputStream inputStream = socket.getInputStream();
-        byte[] serverResponse = new byte[512];
-        int length;
-        int totalBytesRead = 0;
-
         try {
+            // Contact server
+            socket.getOutputStream().write(toServerBytes);
+
+            // Shutdown the outgoing connection if specified
+            if (shutdown) {
+                socket.shutdownOutput();
+            }
+
+            InputStream inputStream = socket.getInputStream();
+            byte[] serverResponse = new byte[512];
+            int length;
+            int totalBytesRead = 0;
+
             while ((length = inputStream.read(serverResponse)) != -1) {
                 response.write(serverResponse, 0, length);
                 totalBytesRead += length;
@@ -50,11 +55,6 @@ public class TCPClient {
         } catch (SocketTimeoutException e) {
             // Handle socket timeout
             System.err.println("Socket timeout occurred.");
-        }
-
-        // Shutdown the outgoing connection if specified
-        if (shutdown) {
-            socket.shutdownOutput();
         }
 
         socket.close();
